@@ -1,43 +1,111 @@
-# SmartXplore — Research Paper Summarizer (Web Demo)
+# 🧠 SmartXplore – Research Paper Summarizer & Explorer
 
-Minimal Flask web app to summarize PDFs or pasted text using Sumy's LSA summarizer.
+SmartXplore is a web-based application that allows users to **upload research papers (PDF)** or **paste text**, and generates a **clean, structured summary** with **headings, bullet points, and key insights**.  
+Built with **Streamlit**, it provides an interactive UI for researchers, students, and professionals to **explore research smarter**.
 
-## Quickstart
+---
 
-1) Create & activate a virtual environment (recommended). In VS Code:
-- Press **Ctrl+Shift+P** → *Python: Create Environment* → *Venv* → pick interpreter
-- Or run manually:
+## 🚀 Features
+✅ **Upload PDF or Paste Text** – Supports research papers and custom text  
+✅ **AI-Powered Summarization** – Extractive summarization using NLP  
+✅ **Clean & Modern UI** – Dark theme, colorful sections, and responsive design  
+✅ **Download Summary** – Export summarized content as a text file  
+✅ **Fast & Lightweight** – Runs locally or on the web (Streamlit Cloud)  
 
+---
+
+## 🛠 Tech Stack
+- **Frontend:** Streamlit, HTML, CSS (Tailwind-inspired styling)
+- **Backend:** Python (Streamlit Framework)
+- **Libraries:**  
+  - `PyPDF2` – Extract text from PDFs  
+  - `sumy` – Summarization algorithm  
+  - `streamlit` – UI and Web App Framework  
+
+---
+
+## 📸 Screenshots
+### **Home Page**
+![Home Page](static/screenshot_home.png)
+
+### **Summary Output**
+![Summary Output](static/screenshot_summary.png)
+
+---
+
+## ⚙️ Installation & Setup
+
+### **1. Clone the Repository**
 ```bash
-# Windows (PowerShell)
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-
-# macOS/Linux
-python3 -m venv .venv
-source .venv/bin/activate
+git clone https://github.com/your-username/SmartXplore.git
+cd SmartXplore
 ```
 
-2) Install deps:
+### **2. Create Virtual Environment**
+```bash
+python -m venv .venv
+source .venv/bin/activate   # For Linux/Mac
+.venv\Scripts\activate      # For Windows
+```
 
+### **3. Install Dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-3) Run the app:
-
+### **4. Run the App**
 ```bash
-python app.py
-# open http://127.0.0.1:5000
+streamlit run app.py
 ```
 
-## Notes
-- Summary length slider lets you choose 1–15 sentences.
-- For scanned PDFs you need OCR (future: `pytesseract` + `ocrmypdf`).
-
-## Production
-Use a WSGI server like waitress:
-
-```bash
-waitress-serve --host=0.0.0.0 --port=5000 app:app
+The app will be live at:
 ```
+http://localhost:8501
+```
+
+---
+
+## 🌐 Deployment (Streamlit Cloud)
+1. Push your code to GitHub  
+2. Go to **[Streamlit Cloud](https://share.streamlit.io/)**  
+3. Connect your GitHub repository  
+4. Select `app.py` as the entry point  
+5. Click **Deploy** 🚀  
+
+---
+
+## 📂 Project Structure
+```
+SmartXplore/
+│
+├── app.py                # Main Streamlit app
+├── requirements.txt      # Python dependencies
+├── README.md             # Project documentation
+├── .gitignore            # Git ignore file
+│
+└── static/
+    ├── index.html        # UI enhancements (if needed)
+    ├── logo.svg          # Project logo
+    └── screenshots/      # App screenshots
+```
+
+---
+
+## 📜 License
+This project is **open-source** under the [MIT License](LICENSE).
+
+---
+
+## ❤️ Contributing
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+## 👨‍💻 Author
+**Santhosh Rajkumar**  
+📧 [Your Email]  
+🔗 [GitHub Profile](https://github.com/your-username)
+
+---
+
+### ⭐ If you like this project, give it a **star** on GitHub!
