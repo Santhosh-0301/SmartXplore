@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartXplore — Research Paper Summarizer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="SmartXplore: Summarize research papers fast. Upload a PDF or paste text."/>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <header class="bg-white shadow-sm sticky top-0 z-10">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
+      <img src="/static/logo.svg" alt="SmartXplore logo" class="w-8 h-8"/>
+      <div>
+        <h1 class="text-xl font-semibold tracking-tight">SmartXplore</h1>
+        <p class="text-xs text-gray-500 -mt-1">Explore research, smarter.</p>
+      </div>
+      <div class="ml-auto">
+        <a href="https://github.com/" target="_blank" class="text-sm text-gray-500 hover:text-gray-700 underline">GitHub (add later)</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-8">
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Left: Input Card -->
+      <section class="bg-white rounded-2xl shadow p-5">
+        <h2 class="text-lg font-semibold mb-4">1) Choose your input</h2>
+        <div class="flex items-center gap-4 mb-4">
+          <label class="inline-flex items-center gap-2">
+            <input type="radio" name="mode" value="pdf" checked class="accent-black">
+            <span>PDF (Upload)</span>
+          </label>
+          <label class="inline-flex items-center gap-2">
+            <input type="radio" name="mode" value="text" class="accent-black">
+            <span>Paste Text</span>
+          </label>
+        </div>
+
+        <!-- PDF Upload -->
+        <div id="pdf-input" class="border-2 border-dashed rounded-xl p-5 text-center">
+          <p class="text-sm text-gray-600 mb-2">Drag & drop a PDF here, or click to select</p>
+          <input id="file" type="file" accept="application/pdf" class="block mx-auto text-sm">
+        </div>
+
+        <!-- Text Area -->
+        <div id="text-input" class="hidden mt-4">
+          <textarea id="text" rows="8" placeholder="Paste abstract or section here..." class="w-full border rounded-xl p-3 text-sm"></textarea>
+        </div>
+
+        <div class="mt-4 flex items-center gap-4">
+          <label for="sentences" class="text-sm font-medium">Summary length:</label>
+          <input id="sentences" type="range" min="1" max="15" value="5" class="w-48">
+          <span id="sentencesVal" class="text-sm text-gray-600">5 sentences</span>
+        </div>
+
+        <button id="summarizeBtn" class="mt-5 w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-black text-white font-medium disabled:opacity-60">
+          Summarize
+        </button>
+        <p id="error" class="text-sm text-red-600 mt-3 hidden"></p>
+      </section>
+
+      <!-- Right: Output Card -->
+      <section class="bg-white rounded-2xl shadow p-5">
+        <h2 class="text-lg font-semibold mb-4">2) Your summary</h2>
+        <div id="stats" class="text-xs text-gray-500 mb-3 hidden"></div>
+        <article id="summary" class="prose prose-sm max-w-none text-gray-800"></article>
+        <div id="actions" class="mt-4 hidden">
+          <button id="copyBtn" class="px-3 py-2 rounded-lg border">Copy</button>
+          <button id="downloadBtn" class="px-3 py-2 rounded-lg border">Download .txt</button>
+        </div>
+      </section>
+    </div>
+
+    <section class="mt-8 bg-white rounded-2xl shadow p-5">
+      <h3 class="font-semibold mb-2">Tip</h3>
+      <p class="text-sm text-gray-600">For best results, upload a properly digitized PDF (not scanned). OCR support can be added later.</p>
+    </section>
+  </main>
+
+  <footer class="text-center text-xs text-gray-400 py-6">
+    Built for demo — SmartXplore ©
+  </footer>
+
+<script>
+const modeRadios = document.querySelectorAll('input[name="mode"]');
+const pdfInput = document.getElementById('pdf-input');
+const textInput = document.getElementById('text-input');
+const fileEl = document.getElementById('file');
+const textEl = document.getElementById('text');
+const sentencesEl = document.getElementById('sentences');
+const sentencesVal = document.getElementById('sentencesVal');
+const summarizeBtn = document.getElementById('summarizeBtn');
+const errorEl = document.getElementById('error');
+const summaryEl = document.getElementById('summary');
+const statsEl = document.getElementById('stats');
+const actionsEl = document.getElementById('actions');
+const copyBtn = document.getElementById('copyBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+
+modeRadios.forEach(r => r.addEventListener('change', () => {
+  if (r.checked && r.value === 'pdf') {
+    pdfInput.classList.remove('hidden');
+    textInput.classList.add('hidden');
+  } else if (r.checked && r.value === 'text') {
+    pdfInput.classList.add('hidden');
+    textInput.classList.remove('hidden');
+  }
+}));
+
+sentencesEl.addEventListener('input', () => {
+  sentencesVal.textContent = sentencesEl.value + " sentences";
+});
+
+function setLoading(state) {
+  summarizeBtn.disabled = state;
+  summarizeBtn.textContent = state ? "Summarizing..." : "Summarize";
+}
+
+function showError(msg) {
+  errorEl.textContent = msg;
+  errorEl.classList.remove('hidden');
+}
+
+function clearError() {
+  errorEl.textContent = "";
+  errorEl.classList.add('hidden');
+}
+
+function renderSummary(text) {
+  // Split into sentences for nicer display
+  const parts = text.split(/(?<=[.!?])\s+/);
+  summaryEl.innerHTML = parts.map(p => `<p>${p}</p>`).join("");
+}
+
+copyBtn.addEventListener('click', async () => {
+  const text = summaryEl.innerText;
+  await navigator.clipboard.writeText(text);
+  copyBtn.textContent = "Copied!";
+  setTimeout(() => (copyBtn.textContent = "Copy"), 1200);
+});
+
+downloadBtn.addEventListener('click', () => {
+  const blob = new Blob([summaryEl.innerText], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = "smartxplore_summary.txt";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+summarizeBtn.addEventListener('click', async () => {
+  clearError();
+  summaryEl.innerHTML = "";
+  statsEl.classList.add('hidden');
+  actionsEl.classList.add('hidden');
+
+  const sentences = parseInt(sentencesEl.value, 10) || 5;
+  const mode = [...modeRadios].find(x => x.checked).value;
+
+  try {
+    setLoading(true);
+    let resp;
+
+    if (mode === 'pdf') {
+      if (!fileEl.files.length) { showError("Please choose a PDF file."); setLoading(false); return; }
+      const fd = new FormData();
+      fd.append('file', fileEl.files[0]);
+      fd.append('sentences', sentences);
+      resp = await fetch('/api/summarize', { method: 'POST', body: fd });
+    } else {
+      const t = (textEl.value || "").trim();
+      if (!t) { showError("Please paste some text."); setLoading(false); return; }
+      resp = await fetch('/api/summarize?sentences=' + sentences, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: t })
+      });
+    }
+
+    const data = await resp.json();
+    if (!data.ok) {
+      throw new Error(data.error || "Unknown error");
+    }
+    renderSummary(data.summary);
+    statsEl.textContent = `Source: ${data.source} • Input words: ${data.input_words} • Summary words: ${data.summary_words} • Sentences: ${data.sentences}`;
+    statsEl.classList.remove('hidden');
+    actionsEl.classList.remove('hidden');
+  } catch (e) {
+    showError(e.message);
+  } finally {
+    setLoading(false);
+  }
+});
+</script>
+</body>
+</html>
