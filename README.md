@@ -103,8 +103,7 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 
 ## 👨‍💻 Author
 **Santhosh Rajkumar**  
-📧 [Your Email]  
-🔗 [GitHub Profile](https://github.com/your-username)
+📧 Santhoshrajkumar4545@gmail.com
 
 ---
 
